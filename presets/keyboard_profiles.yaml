@@ -1,0 +1,75 @@
+# Keyboard Configuration Profiles
+# Quick-switch between different keyboard layouts
+
+# Base configuration that all profiles share
+base:
+  orientation: normal
+  rows: 3
+  columns: 4
+  knobs: 2
+
+# Profile 1: Developer Mode
+profiles:
+  developer:
+    name: "Developer Tools"
+    description: "VS Code, terminal, and development shortcuts"
+    layers:
+      - buttons:
+          - [f13, f14, f15, f16]       # Base layer - Function keys
+          - [f17, f18, f19, f20]
+          - [f21, f22, f23, f24]
+        knobs:
+          - {cw: volumeup, ccw: volumedown, press: mute}
+          - {cw: next, ccw: previous, press: play}
+
+      - buttons:
+          - [cmd-p, cmd-shift-f, ctrl-grave, cmd-b]        # Go File, Search, Terminal, Build
+          - [f5, cmd-shift-k, cmd-shift-d, cmd-shift-p]    # Run, Kill, Debug, Commands
+          - [cmd-/, cmd-shift-f, cmd-k-cmd-s, cmd-,]       # Comment, Format, Shortcuts, Settings
+        knobs:
+          - {cw: ctrl-tab, ccw: ctrl-shift-tab, press: cmd-w}
+          - {cw: cmd-equal, ccw: cmd-minus, press: cmd-0}
+
+      - buttons:
+          - [cmd-c, cmd-v, cmd-x, cmd-z]
+          - [cmd-a, cmd-s, cmd-f, cmd-shift-z]
+          - [cmd-t, cmd-w, cmd-q, cmd-shift-4]
+        knobs:
+          - {cw: macbrightnessup, ccw: macbrightnessdown, press: mute}
+          - {cw: ctrl-tab, ccw: ctrl-shift-tab, press: cmd-tab}
+
+  media:
+    name: "Media Control"
+    description: "Music, video, and browser control"
+    layers:
+      - buttons:
+          - [play, stop, previous, next]               # Media controls
+          - [volumeup, volumedown, mute, favorites]
+          - [macbrightnessup, macbrightnessdown, f13, f14]
+        knobs:
+          - {cw: volumeup, ccw: volumedown, press: mute}
+          - {cw: next, ccw: previous, press: play}
+
+  productivity:
+    name: "Productivity"
+    description: "Copy, paste, window management"
+    layers:
+      - buttons:
+          - [cmd-c, cmd-v, cmd-x, cmd-z]               # Basic editing
+          - [cmd-a, cmd-s, cmd-f, cmd-w]
+          - [cmd-t, cmd-tab, cmd-grave, cmd-q]
+        knobs:
+          - {cw: volumeup, ccw: volumedown, press: mute}
+          - {cw: ctrl-tab, ccw: ctrl-shift-tab, press: cmd-w}
+
+  custom:
+    name: "Custom Layout"
+    description: "Your current custom configuration"
+    layers:
+      - buttons:
+          - [escape, '5', 'cmd-d,enter', 'b,k,v,1,8,0,5,1,8,0,5,shift-1,enter']
+          - ['opt-cmd', up, 'cmd-w', 'cmd-a']
+          - [left, right, up, down]
+        knobs:
+          - {cw: volumeup, ccw: volumedown, press: play}
+          - {cw: 'ctrl-tab', ccw: 'ctrl-shift-tab', press: 'cmd-w'}

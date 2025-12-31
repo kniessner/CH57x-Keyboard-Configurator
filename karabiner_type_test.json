@@ -1,0 +1,80 @@
+{
+  "title": "CH57x Macro Keyboard - Type Test String",
+  "rules": [
+    {
+      "description": "F13 → Type 'test'",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "f13"
+          },
+          "to": [
+            {
+              "key_code": "t"
+            },
+            {
+              "key_code": "e"
+            },
+            {
+              "key_code": "s"
+            },
+            {
+              "key_code": "t"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "F16 → Type 'test'",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "f16"
+          },
+          "to": [
+            {
+              "key_code": "t"
+            },
+            {
+              "key_code": "e"
+            },
+            {
+              "key_code": "s"
+            },
+            {
+              "key_code": "t"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "F18 → Type 'test'",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "f18"
+          },
+          "to": [
+            {
+              "key_code": "t"
+            },
+            {
+              "key_code": "e"
+            },
+            {
+              "key_code": "s"
+            },
+            {
+              "key_code": "t"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

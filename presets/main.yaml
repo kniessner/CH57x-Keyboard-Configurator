@@ -1,0 +1,20 @@
+# CH57x Keyboard Preset: Test
+# Saved from Keyboard Configurator GUI
+
+orientation: normal
+rows: 3
+columns: 4
+knobs: 2
+layers:
+- buttons:
+  - - escape
+    - 'b,k,v,1,8,0,5,1,8,0,5,shift-1,enter'
+    - backspace
+    - 'cmd-w'
+  - [next, click(left), ctrl, f13]
+  - [left, right, up, down]
+  knobs:
+  - {cw: volumeup, ccw: volumedown, press: play}
+  - cw: 'ctrl-tab'
+    ccw: 'ctrl-shift-tab'
+    press: 'cmd-w'

@@ -1,0 +1,46 @@
+# CH57x Macro Keyboard Configuration
+# 12-key layout (4 rows × 3 columns) + 2 knobs
+#
+# Key Layout:
+#   [K1] [K2] [K3]     Row 1
+#   [K4] [K5] [K6]     Row 2
+#   [K7] [K8] [K9]     Row 3
+#   [K10][K11][K12]    Row 4
+#   [Knob1] [Knob2]
+#
+# Strategy: Map keys to F13-F24 for unique triggers
+# Then use Karabiner-Elements for advanced mappings
+
+orientation: normal
+rows: 4
+columns: 3
+knobs: 2
+
+layers:
+- buttons:
+  # ROW 1: Development Essentials
+  # Key 1: Copy (⌘+C), Key 2: Paste (⌘+V), Key 3: Format Document (⌘+⇧+F)
+  - [ "cmd-c", "cmd-v", "cmd-shift-f" ]
+
+  # ROW 2: Navigation & Search
+  # Key 4: Go to File (⌘+P), Key 5: Find in Files (⌘+⇧+F), Key 6: Toggle Terminal (⌃+`)
+  - [ "cmd-p", "cmd-shift-f", "ctrl-grave" ]
+
+  # ROW 3: Advanced Triggers (F13-F15)
+  # Key 7: F13, Key 8: F14, Key 9: F15 - Map in Karabiner for custom actions
+  - [ "f13", "f14", "f15" ]
+
+  # ROW 4: More Triggers & Shortcuts
+  # Key 10: Screenshot area (⌘+⇧+4), Key 11: Undo (⌘+Z), Key 12: Redo (⌘+⇧+Z)
+  - [ "cmd-shift-4", "cmd-z", "cmd-shift-z" ]
+
+  knobs:
+  # Knob 1: Volume Control
+  - ccw: "volumedown"
+    cw: "volumeup"
+    press: "mute"
+
+  # Knob 2: Media Controls
+  - ccw: "previous"
+    cw: "next"
+    press: "play"

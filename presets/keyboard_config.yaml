@@ -1,0 +1,40 @@
+# CH57x Macro Keyboard Configuration - OPTION 2
+# Multiple buttons type "test" via Karabiner-Elements:
+#   - Row 1, Button 1 (F13) → types "test"
+#   - Row 1, Button 4 (F16) → types "test"
+#   - Row 2, Button 1 (F18) → types "test"
+#
+# This config maps buttons to F-keys, then Karabiner types "test"
+
+orientation: normal
+rows: 3
+columns: 4
+knobs: 2
+
+layers:
+- buttons:
+  # Row 1:
+  # Button 1 (f13) and Button 4 (f16) will type "test" via Karabiner
+  - [ "f13", "s", "s", "f16" ]
+
+  # Row 2: Button 1 types "test", rest are navigation
+  - [ "f18", "cmd-shift-f", "ctrl-grave", "cmd-a" ]
+
+  # Row 3: Utilities
+  - [ "cmd-z", "cmd-shift-z", "cmd-shift-4", "f17" ]
+
+  knobs:
+  # Knob 1: Volume Control
+  - ccw: "volumedown"
+    cw: "volumeup"
+    press: "mute"
+
+  # Knob 2: Media Control
+  - ccw: "previous"
+    cw: "next"
+    press: "play"
+
+# To make F13 and F16 type "test":
+# 1. Upload this config to keyboard
+# 2. Install Karabiner config: ./install_karabiner_config.sh
+# 3. Enable the "Type test string" rule in Karabiner-Elements

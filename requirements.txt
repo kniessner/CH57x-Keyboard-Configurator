@@ -1,0 +1,4 @@
+# CH57x Keyboard Configurator Dependencies
+Flask>=2.3.0
+PyYAML>=6.0
+pynput>=1.8.0

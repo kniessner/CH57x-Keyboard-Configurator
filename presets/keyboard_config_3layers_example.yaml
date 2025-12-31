@@ -1,0 +1,90 @@
+# CH57x Macro Keyboard Configuration - 3 Layers Example
+# Use the physical layer button on the side of your keyboard to switch layers
+# LEDs will briefly show the current layer number
+
+orientation: normal
+rows: 3
+columns: 4
+knobs: 2
+
+layers:
+  # ============================================================================
+  # LAYER 1: Default / Function Keys
+  # ============================================================================
+  # Purpose: Universal function keys that work everywhere
+  # Use with Karabiner-Elements for advanced mappings
+  - buttons:
+      - [f13, f14, f15, f16]       # Row 1: F13-F16
+      - [f17, f18, f19, f20]       # Row 2: F17-F20
+      - [f21, f22, f23, f24]       # Row 3: F21-F24
+    knobs:
+      - cw: volumeup               # Knob 1: Volume control
+        ccw: volumedown
+        press: mute
+      - cw: next                   # Knob 2: Media control
+        ccw: previous
+        press: play
+
+  # ============================================================================
+  # LAYER 2: Developer Tools
+  # ============================================================================
+  # Purpose: Common development shortcuts for VS Code / IDEs
+  - buttons:
+      - [cmd-p, cmd-shift-f, ctrl-grave, cmd-b]           # Go to File, Search, Terminal, Build
+      - [f5, cmd-shift-k, cmd-shift-d, cmd-shift-p]       # Run, Kill Terminal, Debug, Command Palette
+      - [cmd-/, cmd-shift-f, cmd-k-cmd-s, cmd-,]         # Comment, Format, Shortcuts, Settings
+    knobs:
+      - cw: ctrl-tab               # Knob 1: Browser/Editor tabs
+        ccw: ctrl-shift-tab
+        press: cmd-w               # Close tab
+      - cw: cmd-equal              # Knob 2: Zoom
+        ccw: cmd-minus
+        press: cmd-0               # Reset zoom
+
+  # ============================================================================
+  # LAYER 3: Productivity Shortcuts
+  # ============================================================================
+  # Purpose: Common macOS shortcuts and window management
+  - buttons:
+      - [cmd-c, cmd-v, cmd-x, cmd-z]                     # Copy, Paste, Cut, Undo
+      - [cmd-a, cmd-s, cmd-f, cmd-shift-z]               # Select All, Save, Find, Redo
+      - [cmd-t, cmd-w, cmd-q, cmd-shift-4]               # New Tab, Close, Quit, Screenshot
+    knobs:
+      - cw: macbrightnessup        # Knob 1: Screen brightness
+        ccw: macbrightnessdown
+        press: mute
+      - cw: ctrl-tab               # Knob 2: App switching
+        ccw: ctrl-shift-tab
+        press: cmd-tab             # Show app switcher
+
+
+# ============================================================================
+# HOW TO USE LAYERS
+# ============================================================================
+#
+# 1. Upload this config to your keyboard using the GUI
+# 2. Press the physical layer button on the side of your keyboard
+# 3. Watch the LEDs briefly show which layer you're on (1, 2, or 3)
+# 4. Press the layer button again to cycle through layers
+#
+# Layer Button Location:
+# - Usually on the left or right side of the keyboard
+# - Small button separate from the main key grid
+# - May be labeled "Layer" or have a layer icon
+#
+# LED Indicators:
+# - Flash briefly when you change layers
+# - Show the current layer number (1, 2, or 3)
+# - Located on top or front of the keyboard
+#
+# ============================================================================
+# CUSTOMIZATION TIPS
+# ============================================================================
+#
+# - Keep Layer 1 as your default/universal layer
+# - Theme Layer 2 and 3 for specific workflows or apps
+# - Use similar knob functions across layers for muscle memory
+# - Test each layer after uploading to verify mappings
+# - Add comments to remember what each layer does
+#
+# ============================================================================
