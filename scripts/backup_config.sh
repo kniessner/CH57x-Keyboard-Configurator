@@ -4,32 +4,17 @@
 # Note: ch57x-keyboard-tool doesn't support downloading config from device
 # This script creates timestamped backups of your YAML config file
 
-CONFIG_FILE="keyboard_config.yaml"
-BACKUP_DIR="config_backups"
+set -e
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/lib/common.sh"
 
-echo "💾 Keyboard Configuration Backup"
-echo "================================="
-echo ""
+print_header "Keyboard Configuration Backup"
+cd_project_root
+require_file "$CONFIG_FILE"
 
-# Change to script directory
-cd "$SCRIPT_DIR"
-
-# Check if config file exists
-if [ ! -f "$CONFIG_FILE" ]; then
-    echo "❌ Error: $CONFIG_FILE not found"
-    exit 1
-fi
-
-# Create backup directory if it doesn't exist
-mkdir -p "$BACKUP_DIR"
-
-# Generate timestamp for backup filename
-TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-BACKUP_FILE="$BACKUP_DIR/keyboard_config_${TIMESTAMP}.yaml"
-
-# Create backup
-cp "$CONFIG_FILE" "$BACKUP_FILE"
+BACKUP_FILE="$(create_timestamped_backup "$CONFIG_FILE")"
 
 echo "✅ Configuration backed up to:"
 echo "   $BACKUP_FILE"
@@ -54,4 +39,4 @@ echo "  - Keep backups of working configurations!"
 echo ""
 echo "To restore a backup:"
 echo "  cp $BACKUP_DIR/keyboard_config_YYYYMMDD_HHMMSS.yaml $CONFIG_FILE"
-echo "  ./upload_config.sh"
+echo "  ./keyboard.sh upload"

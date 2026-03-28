@@ -1,54 +1,97 @@
-# CH57x Macro Keyboard Setup
+# CH57x Macro Keyboard Toolkit
 
-Utilities and a local web UI for configuring a CH57x macro keyboard on macOS.
+Configure, validate, and upload layouts for a CH57x macro keyboard on macOS.
 
-This repo is now organized as a shareable baseline:
-- `keyboard_config.yaml` is a neutral starter layout.
-- `presets/` contains reusable examples instead of personal working copies.
-- local runtime files, backups, `.claude/`, logs, and virtualenvs are ignored.
+This project wraps the low-level CH57x tooling in a cleaner workflow:
+- a single CLI entrypoint: `./keyboard.sh`
+- a local web UI for editing layouts visually
+- preset examples you can adapt instead of starting from scratch
+- helper flows for validation, backups, testing, Karabiner, and passwordless uploads
+
+## Why This Repo Exists
+
+The raw CH57x toolchain works, but the day-to-day ergonomics are rough. This repo makes the keyboard easier to live with by adding:
+
+- a shareable starter config
+- a visual editor
+- repeatable upload and validation commands
+- repo-safe defaults that avoid committing local logs, virtualenvs, and backup files
+- documentation for layers, Bluetooth behavior, shell commands, and Karabiner integration
 
 ## Quick Start
 
-Install the CH57x CLI first:
+Clone the repo, then:
 
 ```bash
-./install_ch57x_tool.sh
+./keyboard.sh install
+./keyboard.sh check
+./keyboard.sh gui
 ```
 
-Then launch the configurator:
+That gives you:
+1. the `ch57x-keyboard-tool` binary
+2. a connection check for the keyboard over USB
+3. a local configurator at `http://127.0.0.1:5001`
+
+If you prefer the terminal flow instead of the GUI:
 
 ```bash
-./run_gui.sh
+./keyboard.sh validate
+./keyboard.sh upload
 ```
 
-The launcher creates `venv/` if needed, installs dependencies from `requirements.txt`, and starts the GUI at `http://127.0.0.1:5001`.
+## What You Can Do
 
-If you prefer the menu wrapper:
+### Visual Configuration
+- Edit button and knob mappings in a local web UI
+- Load and save presets
+- inspect detected device information
+- manage shell-command bindings from the browser
+
+### Safe Command-Line Workflow
+- `./keyboard.sh check` to confirm the keyboard is visible
+- `./keyboard.sh validate` to catch config errors before upload
+- `./keyboard.sh upload` to validate, back up, and flash the current config
+- `./keyboard.sh backup` to save timestamped local snapshots
+- `./keyboard.sh test` to temporarily load a position-finding layout
+
+### Advanced Integration
+- `./keyboard.sh karabiner` to install the bundled Karabiner example
+- `./keyboard.sh passwordless` to configure passwordless upload support
+- shell-command bindings for launching apps or running scripts from key presses
+
+## CLI
+
+`keyboard.sh` is the public shell interface for the repo.
 
 ```bash
-./manage.sh
+./keyboard.sh help
 ```
 
-## What’s Included
+Available commands:
 
-| Path | Purpose |
-|------|---------|
-| `keyboard_config.yaml` | Starter config tracked in git |
-| `presets/main.yaml` | Minimal baseline preset |
-| `presets/keyboard_config.yaml` | Karabiner trigger example |
-| `presets/keyboard_config_3layers_example.yaml` | Three-layer example layout |
-| `presets/keyboard_profiles.yaml` | Reusable profile ideas |
-| `keyboard_config_gui.py` | Flask app for editing and upload |
-| `run_gui.sh` | Launch GUI in a local virtualenv |
-| `gui_control.sh` | Start/stop/status helper for the GUI |
-| `upload_config.sh` | Validate and upload the current YAML config |
-| `backup_config.sh` | Create timestamped local backups |
-| `setup_karabiner.sh` | Install the bundled Karabiner rule example |
-| `shell_commands.json` | Local key-to-command mappings, empty by default |
+```text
+check
+validate
+upload
+backup
+test
+karabiner
+passwordless
+install
+show
+gui
+gui-start
+gui-stop
+gui-status
+gui-restart
+menu
+help
+```
 
 ## Starter Layout
 
-The tracked default config keeps the keypad intentionally safe and generic:
+The default tracked config is intentionally neutral:
 
 ```text
 ┌─────┬─────┬─────┬─────┐
@@ -59,72 +102,49 @@ The tracked default config keeps the keypad intentionally safe and generic:
 │ F21 │ F22 │ F23 │ F24 │
 └─────┴─────┴─────┴─────┘
 
-Knob 1: Volume up/down + mute
-Knob 2: Track next/previous + play
+Knob 1: volume up/down + mute
+Knob 2: next/previous + play
 ```
 
-Using F13-F24 is a good default because those keys rarely conflict with normal shortcuts and are easy to remap in Karabiner-Elements.
+Using F13-F24 as a baseline keeps the hardware layout generic and makes it easy to layer on Karabiner rules or app-specific automation later.
 
-## Common Tasks
+## Repository Layout
 
-Check that the keyboard is visible over USB:
+| Path | Purpose |
+|------|---------|
+| `keyboard.sh` | Main CLI entrypoint |
+| `keyboard_config.yaml` | Current tracked starter config |
+| `keyboard_config_gui.py` | Flask-based configurator backend |
+| `scripts/` | Implementation shell scripts used by the CLI |
+| `scripts/lib/common.sh` | Shared shell helpers |
+| `presets/` | Reusable configuration examples |
+| `doc/` | Supporting documentation |
+| `shell_commands.json` | Local shell-command bindings, empty by default |
 
-```bash
-./check_keyboard_usb.sh
-```
+## Typical Workflow
 
-Validate the current config without uploading:
+1. Install the CH57x tool with `./keyboard.sh install`.
+2. Connect the keyboard over USB and run `./keyboard.sh check`.
+3. Open `./keyboard.sh gui` or edit `keyboard_config.yaml` directly.
+4. Run `./keyboard.sh validate`.
+5. Run `./keyboard.sh upload`.
+6. Add Karabiner or shell-command bindings if you want higher-level automation.
 
-```bash
-./validate_config.sh
-```
+## Presets and Customization
 
-Upload the current config:
+The repo includes several example layouts under `presets/`, including:
+- a minimal starter preset
+- a multi-layer example
+- reusable profile ideas for development, media, and productivity
 
-```bash
-./upload_config.sh
-```
-
-Create a local backup before experimenting:
-
-```bash
-./backup_config.sh
-```
-
-Install the sample Karabiner rule for turning F-keys into typed strings:
-
-```bash
-./setup_karabiner.sh
-```
-
-## Editing the Config
-
-The GUI is the easiest path, but the YAML format is straightforward:
-
-```yaml
-orientation: normal
-rows: 3
-columns: 4
-knobs: 2
-layers:
-  - buttons:
-      - [f13, f14, f15, f16]
-      - [cmd-c, cmd-v, cmd-x, cmd-z]
-      - [left, down, up, right]
-    knobs:
-      - cw: volumeup
-        ccw: volumedown
-        press: mute
-      - cw: next
-        ccw: previous
-        press: play
-```
-
-Run `ch57x-keyboard-tool show-keys` to see valid key names for your firmware/tool version.
+You can keep `keyboard_config.yaml` as your active layout and use the presets as reference material or import targets in the GUI.
 
 ## Shell Command Bindings
 
-The GUI can bind shell commands to detected key combinations. The checked-in `shell_commands.json` starts empty on purpose so personal automations are not shared by default.
+The web UI can map key combinations to shell commands. This is useful for:
+- launching apps
+- triggering scripts
+- running local automation tasks
 
 Examples:
 - `open -a Calculator`
@@ -133,32 +153,26 @@ Examples:
 
 More detail is in [`doc/SHELL_COMMANDS.md`](doc/SHELL_COMMANDS.md).
 
-## Local-Only Files
-
-These are intentionally not part of the shareable project state:
-- `venv/`
-- `gui.log`
-- `config_backups/`
-- `.claude/`
-- macOS `.DS_Store` files
-- ad-hoc preset copies such as `presets/* copy*.yaml`
-
 ## Troubleshooting
 
-If the GUI fails to start, the usual cause is a missing dependency inside `venv/`. Re-running `./run_gui.sh` or `./gui_control.sh start` will install anything missing from `requirements.txt`.
+If the keyboard is connected but not detected:
+- run `./keyboard.sh check`
+- try another USB port or cable
+- prefer direct USB while uploading, even if Bluetooth input works
 
-If upload fails:
-- confirm the keyboard is connected over USB
-- run `./validate_config.sh`
-- make sure `ch57x-keyboard-tool` is installed and on `PATH`
-- expect a `sudo` password prompt unless you configured passwordless upload
+If validation or upload fails:
+- run `./keyboard.sh validate`
+- confirm `ch57x-keyboard-tool` is installed and on `PATH`
+- check for YAML syntax or unsupported key names
 
-If Karabiner rules do not trigger:
-- grant Input Monitoring permission
-- enable the installed rule in Karabiner-Elements
-- use F13-F24 mappings as the hardware-side trigger keys
+If the GUI fails to start:
+- rerun `./keyboard.sh gui`
+- the launcher will recreate the local Python environment if needed
 
-## Related Docs
+If uploads keep prompting for `sudo` and you want to avoid that:
+- run `./keyboard.sh passwordless`
+
+## Documentation
 
 - [`doc/AVAILABLE_KEYS.md`](doc/AVAILABLE_KEYS.md)
 - [`doc/BLUETOOTH_SUPPORT.md`](doc/BLUETOOTH_SUPPORT.md)
@@ -168,3 +182,9 @@ If Karabiner rules do not trigger:
 - [`doc/PASSWORDLESS_SETUP.md`](doc/PASSWORDLESS_SETUP.md)
 - [`doc/QUICK_LAYER_GUIDE.md`](doc/QUICK_LAYER_GUIDE.md)
 - [`doc/SHELL_COMMANDS.md`](doc/SHELL_COMMANDS.md)
+
+## Notes
+
+- This project is currently macOS-focused.
+- The repo is set up to stay shareable: local logs, backups, virtualenvs, and personal workspace files are intentionally ignored.
+- The keyboard stores the flashed configuration in onboard memory, so uploaded mappings persist across machines.

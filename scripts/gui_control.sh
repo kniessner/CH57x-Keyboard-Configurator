@@ -1,24 +1,15 @@
 #!/bin/bash
 # Control script for CH57x Keyboard Configuration GUI
 
-cd "$(dirname "$0")"
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/lib/common.sh"
+cd_project_root
 
 GUI_PORT=5001
 PID_FILE="/tmp/keyboard_gui.pid"
-
-ensure_venv() {
-    if [ ! -d "venv" ]; then
-        echo "📦 Creating virtual environment..."
-        python3 -m venv venv
-    fi
-
-    source venv/bin/activate
-
-    if ! python3 -c "import flask, yaml, pynput" >/dev/null 2>&1; then
-        echo "📦 Installing Python dependencies..."
-        pip install -r requirements.txt
-    fi
-}
 
 function start_gui() {
     # Check if already running
@@ -30,7 +21,7 @@ function start_gui() {
 
     echo "🚀 Starting keyboard configuration GUI..."
 
-    ensure_venv
+    ensure_python_env
 
     # Start GUI in background
     nohup python3 keyboard_config_gui.py > gui.log 2>&1 &
@@ -135,5 +126,6 @@ case "${1:-}" in
         ;;
     *)
         show_help
+        exit 1
         ;;
 esac

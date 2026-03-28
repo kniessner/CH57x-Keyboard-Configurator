@@ -5,7 +5,7 @@
 Run this once to enable passwordless uploads:
 
 ```bash
-./setup_passwordless_upload.sh
+./keyboard.sh passwordless
 ```
 
 This will:

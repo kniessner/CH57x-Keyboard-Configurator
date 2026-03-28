@@ -5,36 +5,15 @@
 
 set -e
 
-TEST_CONFIG="keyboard_config_test.yaml"
 MAIN_CONFIG="keyboard_config.yaml"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/lib/common.sh"
 
-echo "🧪 Keyboard Button Test Mode"
-echo "============================="
-echo ""
-
-# Change to script directory
-cd "$SCRIPT_DIR"
-
-# Check if test config exists
-if [ ! -f "$TEST_CONFIG" ]; then
-    echo "❌ Error: $TEST_CONFIG not found"
-    exit 1
-fi
-
-# Check if ch57x-keyboard-tool is installed
-if ! command -v ch57x-keyboard-tool &> /dev/null; then
-    echo "❌ Error: ch57x-keyboard-tool not found"
-    echo "Please run: ./install_ch57x_tool.sh"
-    exit 1
-fi
-
-# Check if keyboard is connected
-echo "🔍 Checking for keyboard..."
-if ! ./check_keyboard_usb.sh > /dev/null 2>&1; then
-    echo "❌ Error: CH57x keyboard not detected"
-    exit 1
-fi
+print_header "Keyboard Button Test Mode"
+cd_project_root
+ensure_ch57x_tool
+require_keyboard_connected
 
 echo "✅ Keyboard detected"
 echo ""
@@ -54,9 +33,30 @@ echo "  🎚️ Knob 1: Press=k, Left=[, Right=]"
 echo "  🎚️ Knob 2: Press=l, Left=,, Right=."
 echo ""
 
-# Validate test config
+TEMP_CONFIG="$(mktemp "${TMPDIR:-/tmp}/keyboard_test_config.XXXXXX.yaml")"
+trap 'rm -f "$TEMP_CONFIG"' EXIT
+
+cat > "$TEMP_CONFIG" <<'EOF'
+orientation: normal
+rows: 3
+columns: 4
+knobs: 2
+layers:
+  - buttons:
+      - ["1", "2", "3", "4"]
+      - ["5", "6", "7", "8"]
+      - ["9", "0", "minus", "equal"]
+    knobs:
+      - ccw: leftbracket
+        press: k
+        cw: rightbracket
+      - ccw: comma
+        press: l
+        cw: dot
+EOF
+
 echo "🔍 Validating test configuration..."
-if ! cat "$TEST_CONFIG" | ch57x-keyboard-tool validate > /dev/null 2>&1; then
+if ! validate_yaml_file "$TEMP_CONFIG" > /dev/null 2>&1; then
     echo "❌ Test configuration is invalid"
     exit 1
 fi
@@ -71,8 +71,8 @@ echo ""
 # Backup current config
 if [ -f "$MAIN_CONFIG" ]; then
     echo "📦 Creating backup of your main config..."
-    cp "$MAIN_CONFIG" "${MAIN_CONFIG}.backup"
-    echo "   Backed up to: ${MAIN_CONFIG}.backup"
+    backup_file="$(create_timestamped_backup "$MAIN_CONFIG")"
+    echo "   $backup_file"
     echo ""
 fi
 
@@ -89,7 +89,7 @@ echo "⚠️  You'll be prompted for your password (sudo required)"
 echo ""
 
 # Upload test configuration
-if cat "$TEST_CONFIG" | sudo ch57x-keyboard-tool upload; then
+if upload_yaml_file "$TEMP_CONFIG"; then
     echo ""
     echo "✅ Test configuration uploaded!"
     echo ""
@@ -105,7 +105,7 @@ if cat "$TEST_CONFIG" | sudo ch57x-keyboard-tool upload; then
     echo "  • Knob 2 press: l, rotate: , or ."
     echo ""
     echo "🔄 When done testing, restore your main config:"
-    echo "   ./upload_config.sh"
+    echo "   ./keyboard.sh upload"
     echo ""
 else
     echo ""

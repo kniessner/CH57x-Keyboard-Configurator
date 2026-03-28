@@ -19,14 +19,14 @@ The Shell Command feature allows you to bind any shell command to keyboard keys.
 The shell command feature requires `pynput`:
 
 ```bash
-./venv/bin/pip install pynput
+./keyboard.sh gui
 ```
 
-This is already installed if you're using the provided virtual environment.
+That command creates `venv/` if needed and installs the required Python packages, including `pynput`.
 
 ### 2. Configure Key Bindings
 
-1. Open the GUI: `./run_gui.sh`
+1. Open the GUI: `./keyboard.sh gui`
 2. Scroll to the "Shell Command Bindings" section
 3. Enter a key combination (e.g., `f13`, `cmd+f13`, `f14`)
 4. Enter the shell command to execute (e.g., `open -a Calculator`)
@@ -104,7 +104,7 @@ Always test commands in a terminal first before binding them to keys.
 ## Troubleshooting
 
 ### Listener Won't Start
-- Make sure `pynput` is installed: `./venv/bin/pip install pynput`
+- Refresh the local Python environment: `./keyboard.sh gui`
 - Check for permission issues in System Preferences > Security & Privacy > Accessibility
 
 ### Commands Not Executing

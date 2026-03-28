@@ -74,6 +74,6 @@ ch57x-keyboard-tool --version || echo "⚠️  Tool not in PATH yet. Restart ter
 
 echo ""
 echo "✨ Next steps:"
-echo "  1. Run: ./check_keyboard_usb.sh (to verify keyboard is connected)"
+echo "  1. Run: ./keyboard.sh check (to verify keyboard is connected)"
 echo "  2. Edit: keyboard_config.yaml (customize your key mappings)"
-echo "  3. Run: ./upload_config.sh (to upload configuration to keyboard)"
+echo "  3. Run: ./keyboard.sh upload (to upload configuration to keyboard)"

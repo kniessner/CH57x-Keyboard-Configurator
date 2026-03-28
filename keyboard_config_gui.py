@@ -400,7 +400,7 @@ def upload_config():
 
         # Check if keyboard is connected
         check_result = subprocess.run(
-            ['./check_keyboard_usb.sh'],
+            ['./scripts/check_keyboard_usb.sh'],
             capture_output=True,
             text=True,
             cwd=os.getcwd()
@@ -437,7 +437,7 @@ def upload_config():
             if 'password' in error_msg.lower() or 'sudo' in error_msg.lower():
                 return jsonify({
                     'success': False,
-                    'error': 'Password required. Run ./setup_passwordless_upload.sh to enable passwordless uploads.'
+                    'error': 'Password required. Run ./keyboard.sh passwordless to enable passwordless uploads.'
                 })
 
             return jsonify({
