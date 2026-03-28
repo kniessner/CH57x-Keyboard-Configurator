@@ -1,3 +1,5 @@
 {
-  "f13": "open -a Calculator"
+  "f15": "./download-from-clipboard.sh",
+  "f13": "open -a Spotify",
+  "f14": "spotify-now"
 }

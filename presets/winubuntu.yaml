@@ -1,0 +1,23 @@
+# CH57x Keyboard Preset: winubuntu
+# Saved from Keyboard Configurator GUI
+
+orientation: normal
+rows: 3
+columns: 4
+knobs: 2
+layers:
+- buttons:
+  - - escape
+    - 'b,k,v,1,8,0,5,1,8,0,5,shift-1,enter'
+    - backspace
+    - 'ctrl-w'
+  - - next
+    - click(left)
+    - ctrl
+    - 'ctrl-click(left)'
+  - [left, right, up, down]
+  knobs:
+  - {cw: volumeup, ccw: volumedown, press: play}
+  - cw: 'ctrl-tab'
+    ccw: 'ctrl-shift-tab'
+    press: 'ctrl-w'

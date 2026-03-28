@@ -6,34 +6,67 @@ Detect CH57x Keyboard - USB or Bluetooth
 import subprocess
 import json
 import re
+import shutil
+import platform
 
 def detect_usb_keyboard():
     """Check if keyboard is connected via USB"""
     try:
-        result = subprocess.run(
-            ['system_profiler', 'SPUSBDataType', '-json'],
-            capture_output=True,
-            text=True,
-            timeout=5
-        )
+        if shutil.which('system_profiler'):
+            result = subprocess.run(
+                ['system_profiler', 'SPUSBDataType', '-json'],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
 
-        if result.returncode == 0:
-            data = json.loads(result.stdout)
-            # Look for CH57x devices (Vendor ID: 0x1189)
-            for bus in data.get('SPUSBDataType', []):
-                for item in bus.get('_items', []):
-                    if 'vendor_id' in item:
-                        vendor_id = item.get('vendor_id', '')
-                        if '0x1189' in vendor_id or '1189' in vendor_id:
-                            return {
-                                'connected': True,
-                                'type': 'USB',
-                                'name': item.get('_name', 'Unknown'),
-                                'vendor_id': vendor_id,
-                                'product_id': item.get('product_id', 'Unknown'),
-                                'serial': item.get('serial_num', 'N/A'),
-                                'location_id': item.get('location_id', 'N/A')
-                            }
+            if result.returncode == 0:
+                data = json.loads(result.stdout)
+                # Look for CH57x devices (Vendor ID: 0x1189)
+                for bus in data.get('SPUSBDataType', []):
+                    for item in bus.get('_items', []):
+                        if 'vendor_id' in item:
+                            vendor_id = item.get('vendor_id', '')
+                            if '0x1189' in vendor_id or '1189' in vendor_id:
+                                return {
+                                    'connected': True,
+                                    'type': 'USB',
+                                    'name': item.get('_name', 'Unknown'),
+                                    'vendor_id': vendor_id,
+                                    'product_id': item.get('product_id', 'Unknown'),
+                                    'serial': item.get('serial_num', 'N/A'),
+                                    'location_id': item.get('location_id', 'N/A')
+                                }
+
+        if shutil.which('lsusb'):
+            result = subprocess.run(
+                ['lsusb'],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+
+            if result.returncode == 0:
+                for line in result.stdout.splitlines():
+                    match = re.search(
+                        r'^Bus\s+(\d+)\s+Device\s+(\d+):\s+ID\s+([0-9a-fA-F]{4}):([0-9a-fA-F]{4})\s+(.+)$',
+                        line
+                    )
+                    if not match:
+                        continue
+
+                    bus, device, vendor_id, product_id, name = match.groups()
+                    if vendor_id.lower() == '1189':
+                        return {
+                            'connected': True,
+                            'type': 'USB',
+                            'name': name.strip(),
+                            'vendor_id': f'0x{vendor_id.lower()}',
+                            'product_id': f'0x{product_id.lower()}',
+                            'bus': bus,
+                            'device': device,
+                            'platform': platform.system()
+                        }
     except Exception as e:
         print(f"USB detection error: {e}")
 
@@ -41,6 +74,9 @@ def detect_usb_keyboard():
 
 def detect_bluetooth_keyboard():
     """Check if keyboard is connected via Bluetooth"""
+    if not shutil.which('system_profiler'):
+        return {'connected': False, 'type': 'Bluetooth'}
+
     try:
         result = subprocess.run(
             ['system_profiler', 'SPBluetoothDataType'],

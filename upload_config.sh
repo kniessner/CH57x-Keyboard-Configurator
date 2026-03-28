@@ -40,7 +40,7 @@ echo ""
 
 # Check if keyboard is connected
 echo "🔍 Checking for keyboard..."
-if ! ./check_keyboard_usb.sh > /dev/null 2>&1; then
+if ! bash ./check_keyboard_usb.sh > /dev/null 2>&1; then
     echo "❌ Error: CH57x keyboard not detected"
     echo ""
     echo "Please:"

@@ -10,7 +10,13 @@ import yaml
 import os
 import json
 import threading
-from pynput import keyboard as pynput_keyboard
+
+try:
+    from pynput import keyboard as pynput_keyboard
+    PYNPUT_IMPORT_ERROR = None
+except ImportError as exc:
+    pynput_keyboard = None
+    PYNPUT_IMPORT_ERROR = str(exc)
 
 app = Flask(__name__)
 
@@ -54,6 +60,12 @@ class ShellCommandListener:
         """Start listening for key events"""
         if self.active:
             return
+
+        if pynput_keyboard is None:
+            raise RuntimeError(
+                "Shell command listener is unavailable in this environment. "
+                f"{PYNPUT_IMPORT_ERROR}"
+            )
 
         self.active = True
         self.listener = pynput_keyboard.Listener(
