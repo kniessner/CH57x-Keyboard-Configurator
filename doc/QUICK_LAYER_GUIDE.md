@@ -165,6 +165,6 @@ To configure multiple layers:
 
 ## Resources
 
-- **Detailed Guide:** See `LAYERS_GUIDE.md` for comprehensive information
+- **Detailed Guide:** See [`LAYERS_GUIDE.md`](LAYERS_GUIDE.md) for comprehensive information
 - **Example Config:** Check `keyboard_config_3layers_example.yaml`
 - **Current Config:** Your active config is in `keyboard_config.yaml`

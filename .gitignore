@@ -1,0 +1,30 @@
+# Python cache and virtual environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# macOS Finder metadata
+.DS_Store
+
+# Local runtime logs and PID files
+*.log
+*.pid
+
+# Generated local backups
+config_backups/
+*.backup
+keyboard_config_backup.yaml
+presets/* copy*.yaml
+presets/*backup*.yaml
+
+# Editor settings
+.idea/
+.vscode/
+
+# Local AI/editor workspace state
+.claude/

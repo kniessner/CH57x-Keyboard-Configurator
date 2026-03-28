@@ -1,253 +1,170 @@
 # CH57x Macro Keyboard Setup
 
-Complete setup and management for your CH57x macro keyboard (3 rows × 4 columns + 2 knobs) on macOS.
+Utilities and a local web UI for configuring a CH57x macro keyboard on macOS.
 
-## 🚀 Quick Start
+This repo is now organized as a shareable baseline:
+- `keyboard_config.yaml` is a neutral starter layout.
+- `presets/` contains reusable examples instead of personal working copies.
+- local runtime files, backups, `.claude/`, logs, and virtualenvs are ignored.
 
-```bash
-# Web GUI (recommended for easy configuration)
-./run_gui.sh
+## Quick Start
 
-# One-command manager
-./manage.sh
-
-# Or run individual scripts:
-./check_keyboard_usb.sh    # Check connection
-./validate_config.sh       # Validate config
-./upload_config.sh         # Upload to keyboard
-./setup_karabiner.sh       # Setup advanced mappings
-```
-
-## 🖥️ Web GUI Features
-
-Run `./run_gui.sh` to launch the web-based configurator at `http://localhost:5001`
-
-### Features:
-- **Visual Keyboard Layout**: Configure all buttons and knobs visually
-- **Configuration Presets**: Save and load multiple keyboard configurations
-- **Shell Command Bindings**: Execute custom shell commands on key press
-- **LED Control**: Configure backlight modes and colors
-- **Key Logger**: Test and debug key presses in real-time
-- **Auto-Upload**: Automatically upload changes to keyboard
-- **Device Detection**: See connection status (USB/Bluetooth)
-
-### Shell Commands ⚡
-Bind shell commands to any key combination:
-1. Open GUI and scroll to "Shell Command Bindings"
-2. Enter key combo (e.g., `f13`) and shell command
-3. Click "Start Listener" to activate
-4. Press the key to execute the command
-
-Examples:
-- `open -a Calculator` - Open Calculator app
-- `screencapture -c` - Take screenshot
-- `/path/to/script.sh` - Run custom script
-
-See [SHELL_COMMANDS.md](SHELL_COMMANDS.md) for detailed documentation.
-
-## 📁 Files
-
-| File | Purpose |
-|------|---------|
-| `run_gui.sh` | **Launch web-based configurator** |
-| `keyboard_config_gui.py` | Web GUI application |
-| `manage.sh` | **Interactive menu for all operations** |
-| `keyboard_config.yaml` | Main keyboard configuration |
-| `presets/` | Saved configuration presets |
-| `shell_commands.json` | Shell command bindings |
-| `keyboard_config_test.yaml` | Test config (buttons type numbers) |
-| `karabiner_type_test.json` | Karabiner rules for typing "test" |
-| `check_keyboard_usb.sh` | Verify keyboard connection |
-| `validate_config.sh` | Validate config before upload |
-| `upload_config.sh` | Upload config to keyboard (needs sudo) |
-| `backup_config.sh` | Create timestamped backup |
-| `test_buttons.sh` | Test button layout |
-| `setup_karabiner.sh` | Install Karabiner configuration |
-| `install_ch57x_tool.sh` | Install programming tool |
-
-## 🎹 Current Button Layout
-
-```
-┌─────┬─────┬─────┬─────┐
-│ F3  │  s  │  s  │ F16 │  ← Row 1
-│     │     │     │test │
-├─────┼─────┼─────┼─────┤
-│ F18 │⌘⇧F │ ⌃`  │ ⌘A  │  ← Row 2
-│test │     │     │     │
-├─────┼─────┼─────┼─────┤
-│ ⌘Z  │⌘⇧Z │⌘⇧4 │ F17 │  ← Row 3
-└─────┴─────┴─────┴─────┘
-
-🎚️ Knob 1: Volume ↻ / Mute ⏺
-🎚️ Knob 2: Track ↻ / Play ⏺
-```
-
-**Buttons configured to type "test" (via Karabiner):**
-- Row 1, Button 4 (F16)
-- Row 2, Button 1 (F18)
-
-## 🔧 Setup Steps
-
-### 1. Check Keyboard
-
-```bash
-./check_keyboard_usb.sh
-```
-
-Should show: `✅ CH57x keyboard detected!`
-
-### 2. Install Tool (First Time Only)
+Install the CH57x CLI first:
 
 ```bash
 ./install_ch57x_tool.sh
 ```
 
-Choose cargo (option 1) or binary (option 2).
-
-### 3. Edit Configuration
+Then launch the configurator:
 
 ```bash
-nano keyboard_config.yaml
+./run_gui.sh
 ```
 
-Edit button mappings as needed.
+The launcher creates `venv/` if needed, installs dependencies from `requirements.txt`, and starts the GUI at `http://127.0.0.1:5001`.
 
-### 4. Upload Configuration
+If you prefer the menu wrapper:
+
+```bash
+./manage.sh
+```
+
+## What’s Included
+
+| Path | Purpose |
+|------|---------|
+| `keyboard_config.yaml` | Starter config tracked in git |
+| `presets/main.yaml` | Minimal baseline preset |
+| `presets/keyboard_config.yaml` | Karabiner trigger example |
+| `presets/keyboard_config_3layers_example.yaml` | Three-layer example layout |
+| `presets/keyboard_profiles.yaml` | Reusable profile ideas |
+| `keyboard_config_gui.py` | Flask app for editing and upload |
+| `run_gui.sh` | Launch GUI in a local virtualenv |
+| `gui_control.sh` | Start/stop/status helper for the GUI |
+| `upload_config.sh` | Validate and upload the current YAML config |
+| `backup_config.sh` | Create timestamped local backups |
+| `setup_karabiner.sh` | Install the bundled Karabiner rule example |
+| `shell_commands.json` | Local key-to-command mappings, empty by default |
+
+## Starter Layout
+
+The tracked default config keeps the keypad intentionally safe and generic:
+
+```text
+┌─────┬─────┬─────┬─────┐
+│ F13 │ F14 │ F15 │ F16 │
+├─────┼─────┼─────┼─────┤
+│ F17 │ F18 │ F19 │ F20 │
+├─────┼─────┼─────┼─────┤
+│ F21 │ F22 │ F23 │ F24 │
+└─────┴─────┴─────┴─────┘
+
+Knob 1: Volume up/down + mute
+Knob 2: Track next/previous + play
+```
+
+Using F13-F24 is a good default because those keys rarely conflict with normal shortcuts and are easy to remap in Karabiner-Elements.
+
+## Common Tasks
+
+Check that the keyboard is visible over USB:
+
+```bash
+./check_keyboard_usb.sh
+```
+
+Validate the current config without uploading:
+
+```bash
+./validate_config.sh
+```
+
+Upload the current config:
 
 ```bash
 ./upload_config.sh
 ```
 
-Will ask for your password (sudo required for USB access).
+Create a local backup before experimenting:
 
-### 5. Setup Karabiner (For "test" typing)
+```bash
+./backup_config.sh
+```
+
+Install the sample Karabiner rule for turning F-keys into typed strings:
 
 ```bash
 ./setup_karabiner.sh
 ```
 
-Enable rules in Karabiner-Elements app.
+## Editing the Config
 
-## 📝 Configuration Syntax
-
-### Basic Keys
-```yaml
-- ["a", "b", "c", "d"]          # Single keys
-- ["f13", "f14", "f15", "f16"]  # Function keys
-```
-
-### With Modifiers
-```yaml
-- ["cmd-c", "cmd-v", "cmd-z"]           # Command + key
-- ["cmd-shift-f", "ctrl-alt-delete"]    # Multiple modifiers
-```
-
-### Media Keys
-```yaml
-- ["volumeup", "volumedown", "mute"]
-- ["play", "next", "previous"]
-```
-
-### Available Modifiers
-- `cmd` (⌘), `ctrl` (⌃), `shift` (⇧), `alt` (⌥)
-- `rcmd`, `rctrl`, `rshift`, `ralt` (right-side versions)
-
-### Key Names
-Run `ch57x-keyboard-tool show-keys` to see all available keys.
-
-## 🧪 Testing Button Layout
-
-To identify which physical button is which config position:
-
-```bash
-./test_buttons.sh
-```
-
-Each button will type its index number (1-9, 0, -, =).
-
-## 🎯 Common Shortcuts
+The GUI is the easiest path, but the YAML format is straightforward:
 
 ```yaml
-# Development
-- ["cmd-c", "cmd-v", "cmd-shift-f"]     # Copy, Paste, Format
-- ["cmd-p", "cmd-shift-f", "ctrl-grave"] # Quick Open, Find, Terminal
-- ["cmd-z", "cmd-shift-z", "cmd-s"]     # Undo, Redo, Save
-
-# Navigation
-- ["cmd-tab", "cmd-grave", "cmd-w"]     # Switch App/Window, Close
-- ["cmd-t", "cmd-shift-t", "cmd-w"]     # New Tab, Reopen, Close
-
-# Media
-- ["volumeup", "volumedown", "mute"]
-- ["play", "next", "previous"]
+orientation: normal
+rows: 3
+columns: 4
+knobs: 2
+layers:
+  - buttons:
+      - [f13, f14, f15, f16]
+      - [cmd-c, cmd-v, cmd-x, cmd-z]
+      - [left, down, up, right]
+    knobs:
+      - cw: volumeup
+        ccw: volumedown
+        press: mute
+      - cw: next
+        ccw: previous
+        press: play
 ```
 
-## 🔧 Troubleshooting
+Run `ch57x-keyboard-tool show-keys` to see valid key names for your firmware/tool version.
 
-### Keyboard Not Detected
-```bash
-./check_keyboard_usb.sh
-```
-- Try different USB port
-- Use data-capable cable
-- Check USB-C adapter
+## Shell Command Bindings
 
-### Upload Permission Error
-- Normal on macOS - requires sudo
-- Script will prompt for password
-- This is safe and expected
+The GUI can bind shell commands to detected key combinations. The checked-in `shell_commands.json` starts empty on purpose so personal automations are not shared by default.
 
-### Keys Not Working
-1. Unplug and replug keyboard
-2. Validate config: `./validate_config.sh`
-3. Check key names match available keys
-4. Re-upload configuration
+Examples:
+- `open -a Calculator`
+- `screencapture -c`
+- `/absolute/path/to/script.sh`
 
-### Karabiner Not Triggering
-1. System Settings → Privacy → Input Monitoring
-2. Enable Karabiner-Elements
-3. Check rules are enabled in app
-4. Restart Karabiner-Elements
+More detail is in [`doc/SHELL_COMMANDS.md`](doc/SHELL_COMMANDS.md).
 
-## 💡 Tips
+## Local-Only Files
 
-1. **Start simple** - Test basic keys before complex shortcuts
-2. **Use F13-F24** - No conflicts with system shortcuts
-3. **Backup often** - Run `./backup_config.sh` before changes
-4. **Test incrementally** - Upload and test one row at a time
-5. **Document changes** - Add comments to YAML file
+These are intentionally not part of the shareable project state:
+- `venv/`
+- `gui.log`
+- `config_backups/`
+- `.claude/`
+- macOS `.DS_Store` files
+- ad-hoc preset copies such as `presets/* copy*.yaml`
 
-## 🎨 Advanced: Typing Custom Strings
+## Troubleshooting
 
-The keyboard can only send single keystrokes. To type strings like "test":
+If the GUI fails to start, the usual cause is a missing dependency inside `venv/`. Re-running `./run_gui.sh` or `./gui_control.sh start` will install anything missing from `requirements.txt`.
 
-1. **Map button to F-key** (e.g., F13, F16, F18)
-2. **Use Karabiner** to convert F-key to keystroke sequence
-3. **Enable rule** in Karabiner-Elements
+If upload fails:
+- confirm the keyboard is connected over USB
+- run `./validate_config.sh`
+- make sure `ch57x-keyboard-tool` is installed and on `PATH`
+- expect a `sudo` password prompt unless you configured passwordless upload
 
-See `karabiner_type_test.json` for example.
+If Karabiner rules do not trigger:
+- grant Input Monitoring permission
+- enable the installed rule in Karabiner-Elements
+- use F13-F24 mappings as the hardware-side trigger keys
 
-## 📦 Backup & Restore
+## Related Docs
 
-### Create Backup
-```bash
-./backup_config.sh
-```
-
-Saves to `config_backups/keyboard_config_YYYYMMDD_HHMMSS.yaml`
-
-### Restore Backup
-```bash
-cp config_backups/keyboard_config_YYYYMMDD_HHMMSS.yaml keyboard_config.yaml
-./upload_config.sh
-```
-
-## 🔗 Resources
-
-- [ch57x-keyboard-tool](https://github.com/kriomant/ch57x-keyboard-tool)
-- [Karabiner-Elements](https://karabiner-elements.pqrs.org/)
-- [USB HID Key Codes](https://www.usb.org/sites/default/files/documents/hut1_12v2.pdf)
-
----
-
-**Need help? Run `./manage.sh` for interactive menu! 🎹**
+- [`doc/AVAILABLE_KEYS.md`](doc/AVAILABLE_KEYS.md)
+- [`doc/BLUETOOTH_SUPPORT.md`](doc/BLUETOOTH_SUPPORT.md)
+- [`doc/LAYER_SWITCHING.md`](doc/LAYER_SWITCHING.md)
+- [`doc/LAYERS_GUIDE.md`](doc/LAYERS_GUIDE.md)
+- [`doc/KNOB_PRESETS.md`](doc/KNOB_PRESETS.md)
+- [`doc/PASSWORDLESS_SETUP.md`](doc/PASSWORDLESS_SETUP.md)
+- [`doc/QUICK_LAYER_GUIDE.md`](doc/QUICK_LAYER_GUIDE.md)
+- [`doc/SHELL_COMMANDS.md`](doc/SHELL_COMMANDS.md)

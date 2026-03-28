@@ -3,15 +3,21 @@
 
 cd "$(dirname "$0")"
 
-# Check if venv exists
-if [ ! -d "venv" ]; then
-    echo "Creating virtual environment..."
-    python3 -m venv venv
+ensure_venv() {
+    if [ ! -d "venv" ]; then
+        echo "Creating virtual environment..."
+        python3 -m venv venv
+    fi
+
     source venv/bin/activate
-    pip install flask pyyaml
-else
-    source venv/bin/activate
-fi
+
+    if ! python3 -c "import flask, yaml, pynput" >/dev/null 2>&1; then
+        echo "Installing Python dependencies..."
+        pip install -r requirements.txt
+    fi
+}
+
+ensure_venv
 
 # Run the GUI
 python3 keyboard_config_gui.py

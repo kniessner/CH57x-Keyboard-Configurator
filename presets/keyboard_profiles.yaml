@@ -62,14 +62,14 @@ profiles:
           - {cw: volumeup, ccw: volumedown, press: mute}
           - {cw: ctrl-tab, ccw: ctrl-shift-tab, press: cmd-w}
 
-  custom:
-    name: "Custom Layout"
-    description: "Your current custom configuration"
+  navigation:
+    name: "Navigation and Windowing"
+    description: "Arrow keys, tab movement, and common window shortcuts"
     layers:
       - buttons:
-          - [escape, '5', 'cmd-d,enter', 'b,k,v,1,8,0,5,1,8,0,5,shift-1,enter']
-          - ['opt-cmd', up, 'cmd-w', 'cmd-a']
+          - [escape, home, end, cmd-w]
+          - [pageup, up, pagedown, cmd-tab]
           - [left, right, up, down]
         knobs:
-          - {cw: volumeup, ccw: volumedown, press: play}
-          - {cw: 'ctrl-tab', ccw: 'ctrl-shift-tab', press: 'cmd-w'}
+          - {cw: volumeup, ccw: volumedown, press: mute}
+          - {cw: ctrl-tab, ccw: ctrl-shift-tab, press: cmd-w}

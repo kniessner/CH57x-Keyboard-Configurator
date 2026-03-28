@@ -7,6 +7,65 @@ import subprocess
 import json
 import re
 
+CH57X_VENDOR_ID = "1189"
+
+def normalize_vendor_id(value):
+    """Normalize vendor IDs like 0x1189 or 4489 to lowercase hex without 0x."""
+    if value is None:
+        return ""
+
+    text = str(value).strip().lower()
+    if text.startswith("0x"):
+        return text[2:]
+
+    if text.isdigit():
+        return format(int(text), "x")
+
+    match = re.search(r"0x([0-9a-f]+)", text)
+    if match:
+        return match.group(1)
+
+    return text
+
+def walk_usb_items(items):
+    """Recursively walk nested system_profiler USB items."""
+    for item in items:
+        yield item
+        children = item.get('_items', [])
+        if children:
+            yield from walk_usb_items(children)
+
+def parse_ioreg_usb_devices(output):
+    """Parse IOUSBHostDevice blocks from plain-text ioreg output."""
+    devices = []
+    current = None
+
+    for line in output.splitlines():
+        header = re.match(r'.*\+\-o\s+(.+?)@\S+\s+<class IOUSBHostDevice\b', line)
+        if header:
+            if current:
+                devices.append(current)
+            current = {'name': header.group(1)}
+            continue
+
+        if current is None:
+            continue
+
+        stripped = line.lstrip("| ").strip()
+        if stripped == "}":
+            devices.append(current)
+            current = None
+            continue
+
+        kv = re.match(r'"([^"]+)"\s*=\s*(.+)', stripped)
+        if not kv:
+            continue
+
+        key, value = kv.groups()
+        current[key] = value.strip().strip('"')
+
+    return devices
+
 def detect_usb_keyboard():
     """Check if keyboard is connected via USB"""
     try:
@@ -19,23 +78,46 @@ def detect_usb_keyboard():
 
         if result.returncode == 0:
             data = json.loads(result.stdout)
-            # Look for CH57x devices (Vendor ID: 0x1189)
+            # Look for CH57x devices (Vendor ID: 0x1189), recursing into hubs.
             for bus in data.get('SPUSBDataType', []):
-                for item in bus.get('_items', []):
-                    if 'vendor_id' in item:
-                        vendor_id = item.get('vendor_id', '')
-                        if '0x1189' in vendor_id or '1189' in vendor_id:
-                            return {
-                                'connected': True,
-                                'type': 'USB',
-                                'name': item.get('_name', 'Unknown'),
-                                'vendor_id': vendor_id,
-                                'product_id': item.get('product_id', 'Unknown'),
-                                'serial': item.get('serial_num', 'N/A'),
-                                'location_id': item.get('location_id', 'N/A')
-                            }
+                for item in walk_usb_items(bus.get('_items', [])):
+                    vendor_id = item.get('vendor_id', '')
+                    if normalize_vendor_id(vendor_id) == CH57X_VENDOR_ID:
+                        return {
+                            'connected': True,
+                            'type': 'USB',
+                            'name': item.get('_name', 'Unknown'),
+                            'vendor_id': vendor_id,
+                            'product_id': item.get('product_id', 'Unknown'),
+                            'serial': item.get('serial_num', 'N/A'),
+                            'location_id': item.get('location_id', 'N/A')
+                        }
     except Exception as e:
         print(f"USB detection error: {e}")
+
+    try:
+        result = subprocess.run(
+            ['ioreg', '-p', 'IOUSB', '-l', '-w', '0'],
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+
+        if result.returncode == 0:
+            for item in parse_ioreg_usb_devices(result.stdout):
+                vendor_id = item.get('idVendor', '')
+                if normalize_vendor_id(vendor_id) == CH57X_VENDOR_ID:
+                    return {
+                        'connected': True,
+                        'type': 'USB',
+                        'name': item.get('USB Product Name') or item.get('kUSBProductString') or item.get('name', 'Unknown'),
+                        'vendor_id': vendor_id,
+                        'product_id': item.get('idProduct', 'Unknown'),
+                        'serial': item.get('USB Serial Number') or item.get('kUSBSerialNumberString', 'N/A'),
+                        'location_id': item.get('locationID', 'N/A')
+                    }
+    except Exception as e:
+        print(f"USB detection fallback error: {e}")
 
     return {'connected': False, 'type': 'USB'}
 

@@ -7,14 +7,11 @@ columns: 4
 knobs: 2
 layers:
 - buttons:
-  - - escape
-    - 'b,k,v,1,8,0,5,1,8,0,5,shift-1,enter'
-    - insert "ddf"
-    - 'cmd-w'
-  - [next, play, cmd, f13]
-  - [left, right, up, down]
+  - [f13, f14, f15, f16]
+  - [f17, f18, f19, f20]
+  - [f21, f22, f23, f24]
   knobs:
-  - {cw: volumeup, ccw: volumedown, press: play}
   - cw: 'ctrl-tab'
     ccw: 'ctrl-shift-tab'
     press: 'cmd-w'
+  - {cw: next, ccw: previous, press: play}
