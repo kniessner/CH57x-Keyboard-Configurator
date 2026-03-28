@@ -2,6 +2,8 @@
 
 Execute custom shell commands when specific keys or key combinations are pressed on your macro keyboard.
 
+This feature is disabled by default. Enable it intentionally for local use with `ENABLE_SHELL_COMMANDS=1 ./keyboard.sh gui`.
+
 ## Overview
 
 The Shell Command feature allows you to bind any shell command to keyboard keys. When the listener is active and you press the configured key combination, the associated command will execute automatically.
