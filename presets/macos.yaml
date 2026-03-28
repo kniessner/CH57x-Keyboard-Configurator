@@ -1,0 +1,20 @@
+# CH57x Keyboard Preset: macOS
+# Typical macOS shortcuts with browser/editor tab control on knob 1.
+
+orientation: normal
+rows: 3
+columns: 4
+knobs: 2
+
+layers:
+  - buttons:
+      - [cmd-c, cmd-v, cmd-z, cmd-shift-z]
+      - [cmd-space, cmd-tab, cmd-q, cmd-shift-4]
+      - [cmd-t, cmd-w, cmd-r, cmd-f]
+    knobs:
+      - cw: cmd-shift-rightbracket
+        ccw: cmd-shift-leftbracket
+        press: cmd-w
+      - cw: volumeup
+        ccw: volumedown
+        press: mute

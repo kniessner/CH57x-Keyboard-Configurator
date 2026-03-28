@@ -27,6 +27,7 @@ show_menu() {
     echo "  passwordless Configure passwordless uploads"
     echo "  install     Install ch57x-keyboard-tool"
     echo "  show        Print current config"
+    echo "  tui         Run the terminal UI"
     echo "  gui         Run the local web UI"
     echo "  gui-start   Start GUI in background"
     echo "  gui-stop    Stop background GUI"
@@ -48,6 +49,7 @@ run_command() {
         passwordless) "$SCRIPT_DIR/setup_passwordless_upload.sh" ;;
         install) "$SCRIPT_DIR/install_ch57x_tool.sh" ;;
         show) cat "$CONFIG_FILE" ;;
+        tui) "$SCRIPT_DIR/run_tui.sh" ;;
         gui) "$SCRIPT_DIR/run_gui.sh" ;;
         gui-start) "$SCRIPT_DIR/gui_control.sh" start ;;
         gui-stop) "$SCRIPT_DIR/gui_control.sh" stop ;;
@@ -77,11 +79,12 @@ interactive_menu() {
         echo "  6) Setup Karabiner-Elements"
         echo "  7) Configure passwordless uploads"
         echo "  8) Install ch57x-keyboard-tool"
-        echo "  9) Launch GUI"
-        echo "  a) Show current config"
+        echo "  9) Launch TUI"
+        echo "  a) Launch GUI"
+        echo "  b) Show current config"
         echo "  0) Exit"
         echo ""
-        read -r -p "Select option (0-9, a): " choice
+        read -r -p "Select option (0-9, a-b): " choice
         echo ""
 
         case "$choice" in
@@ -93,8 +96,9 @@ interactive_menu() {
             6) run_command karabiner ;;
             7) run_command passwordless ;;
             8) run_command install ;;
-            9) run_command gui ;;
-            a|A) run_command show ;;
+            9) run_command tui ;;
+            a|A) run_command gui ;;
+            b|B) run_command show ;;
             0) exit 0 ;;
             *) echo "❌ Invalid option" ;;
         esac

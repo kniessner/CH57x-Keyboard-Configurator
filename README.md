@@ -4,6 +4,7 @@ Configure, validate, and upload layouts for a CH57x macro keyboard on macOS.
 
 This project wraps the low-level CH57x tooling in a cleaner workflow:
 - a single CLI entrypoint: `./keyboard.sh`
+- a terminal UI for quick preset-driven workflows
 - a local web UI for editing layouts visually
 - preset examples you can adapt instead of starting from scratch
 - helper flows for validation, backups, testing, Karabiner, and passwordless uploads
@@ -25,13 +26,15 @@ Clone the repo, then:
 ```bash
 ./keyboard.sh install
 ./keyboard.sh check
+./keyboard.sh tui
 ./keyboard.sh gui
 ```
 
 That gives you:
 1. the `ch57x-keyboard-tool` binary
 2. a connection check for the keyboard over USB
-3. a local configurator at `http://127.0.0.1:5001`
+3. a terminal UI for quick actions and preset application
+4. a local configurator at `http://127.0.0.1:5001`
 
 If you prefer the terminal flow instead of the GUI:
 
@@ -47,6 +50,12 @@ If you prefer the terminal flow instead of the GUI:
 - Load and save presets
 - inspect detected device information
 - manage shell-command bindings from the browser
+
+### Terminal Workflow
+- Run `./keyboard.sh tui` for a keyboard-friendly terminal interface
+- Inspect the current config without leaving the terminal
+- Apply presets directly to `keyboard_config.yaml`
+- Trigger check, validate, upload, backup, and test actions from one screen
 
 ### Safe Command-Line Workflow
 - `./keyboard.sh check` to confirm the keyboard is visible
@@ -80,6 +89,7 @@ karabiner
 passwordless
 install
 show
+tui
 gui
 gui-start
 gui-stop
@@ -126,9 +136,10 @@ Using F13-F24 as a baseline keeps the hardware layout generic and makes it easy 
 1. Install the CH57x tool with `./keyboard.sh install`.
 2. Connect the keyboard over USB and run `./keyboard.sh check`.
 3. Open `./keyboard.sh gui` or edit `keyboard_config.yaml` directly.
-4. Run `./keyboard.sh validate`.
-5. Run `./keyboard.sh upload`.
-6. Add Karabiner or shell-command bindings if you want higher-level automation.
+4. Or use `./keyboard.sh tui` if you want a terminal-first flow.
+5. Run `./keyboard.sh validate`.
+6. Run `./keyboard.sh upload`.
+7. Add Karabiner or shell-command bindings if you want higher-level automation.
 
 ## Presets and Customization
 

@@ -73,3 +73,39 @@ profiles:
         knobs:
           - {cw: volumeup, ccw: volumedown, press: mute}
           - {cw: ctrl-tab, ccw: ctrl-shift-tab, press: cmd-w}
+
+  macos:
+    name: "Typical macOS"
+    description: "Common macOS editing, switching, and screenshot shortcuts with tab control on knob 1"
+    layers:
+      - buttons:
+          - [cmd-c, cmd-v, cmd-z, cmd-shift-z]
+          - [cmd-space, cmd-tab, cmd-q, cmd-shift-4]
+          - [cmd-t, cmd-w, cmd-r, cmd-f]
+        knobs:
+          - {cw: cmd-shift-rightbracket, ccw: cmd-shift-leftbracket, press: cmd-w}
+          - {cw: volumeup, ccw: volumedown, press: mute}
+
+  windows:
+    name: "Typical Windows"
+    description: "Common Windows editing, app switching, and browser tab shortcuts"
+    layers:
+      - buttons:
+          - [ctrl-c, ctrl-v, ctrl-z, ctrl-y]
+          - [win-e, win-d, alt-tab, printscreen]
+          - [ctrl-t, ctrl-w, ctrl-r, ctrl-f]
+        knobs:
+          - {cw: ctrl-tab, ccw: ctrl-shift-tab, press: ctrl-w}
+          - {cw: volumeup, ccw: volumedown, press: mute}
+
+  ubuntu:
+    name: "Typical Ubuntu"
+    description: "Common Ubuntu terminal, browser, and tab navigation shortcuts"
+    layers:
+      - buttons:
+          - [ctrl-c, ctrl-v, ctrl-z, ctrl-shift-z]
+          - [ctrl-alt-t, alt-tab, printscreen, ctrl-l]
+          - [ctrl-t, ctrl-w, ctrl-r, ctrl-f]
+        knobs:
+          - {cw: ctrl-tab, ccw: ctrl-shift-tab, press: ctrl-w}
+          - {cw: volumeup, ccw: volumedown, press: mute}

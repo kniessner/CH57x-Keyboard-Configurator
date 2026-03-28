@@ -1,0 +1,20 @@
+# CH57x Keyboard Preset: Windows
+# Typical Windows shortcuts with browser/editor tab control on knob 1.
+
+orientation: normal
+rows: 3
+columns: 4
+knobs: 2
+
+layers:
+  - buttons:
+      - [ctrl-c, ctrl-v, ctrl-z, ctrl-y]
+      - [win-e, win-d, alt-tab, printscreen]
+      - [ctrl-t, ctrl-w, ctrl-r, ctrl-f]
+    knobs:
+      - cw: ctrl-tab
+        ccw: ctrl-shift-tab
+        press: ctrl-w
+      - cw: volumeup
+        ccw: volumedown
+        press: mute

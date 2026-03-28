@@ -1,0 +1,20 @@
+# CH57x Keyboard Preset: Ubuntu
+# Typical Ubuntu/Linux shortcuts with terminal and browser tab control.
+
+orientation: normal
+rows: 3
+columns: 4
+knobs: 2
+
+layers:
+  - buttons:
+      - [ctrl-c, ctrl-v, ctrl-z, ctrl-shift-z]
+      - [ctrl-alt-t, alt-tab, printscreen, ctrl-l]
+      - [ctrl-t, ctrl-w, ctrl-r, ctrl-f]
+    knobs:
+      - cw: ctrl-tab
+        ccw: ctrl-shift-tab
+        press: ctrl-w
+      - cw: volumeup
+        ccw: volumedown
+        press: mute
