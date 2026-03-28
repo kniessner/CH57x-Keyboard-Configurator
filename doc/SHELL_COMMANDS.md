@@ -73,10 +73,10 @@ osascript -e 'tell application "Finder" to empty trash'
 ### Custom Scripts
 ```bash
 # Run a custom script
-/Users/yourusername/scripts/my_script.sh
+./scripts/my_script.sh
 
 # Execute with parameters
-/usr/local/bin/mycommand --flag value
+./scripts/my_script.sh --flag value
 ```
 
 ### AppleScript Integration
@@ -132,7 +132,7 @@ Combine shell commands with your keyboard configuration:
 
 ## Tips
 
-- Use absolute paths for scripts and commands
+- Use paths that remain valid on your machine; for project scripts, prefer repo-relative paths like `./scripts/my_script.sh`
 - Test commands thoroughly before binding
 - Document your bindings (what each key does)
 - Create backup of `shell_commands.json`

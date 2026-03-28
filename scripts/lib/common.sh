@@ -5,6 +5,14 @@ CONFIG_FILE="${CONFIG_FILE:-keyboard_config.yaml}"
 BACKUP_DIR="${BACKUP_DIR:-config_backups}"
 CH57X_TOOL="${CH57X_TOOL:-ch57x-keyboard-tool}"
 
+resolve_project_path() {
+    local path="$1"
+    case "$path" in
+        /*) printf '%s\n' "$path" ;;
+        *) printf '%s\n' "$PROJECT_ROOT/$path" ;;
+    esac
+}
+
 cd_project_root() {
     cd "$PROJECT_ROOT"
 }
@@ -23,7 +31,9 @@ print_header() {
 
 require_file() {
     local path="$1"
-    [ -f "$path" ] || fail "$path not found"
+    local resolved_path
+    resolved_path="$(resolve_project_path "$path")"
+    [ -f "$resolved_path" ] || fail "$path not found"
 }
 
 ensure_ch57x_tool() {
@@ -50,29 +60,40 @@ upload_yaml_file() {
 
 create_timestamped_backup() {
     local source_file="$1"
-    mkdir -p "$BACKUP_DIR"
+    local resolved_source_file
+    local resolved_backup_dir
+    resolved_source_file="$(resolve_project_path "$source_file")"
+    resolved_backup_dir="$(resolve_project_path "$BACKUP_DIR")"
+
+    mkdir -p "$resolved_backup_dir"
 
     local timestamp
     timestamp="$(date +"%Y%m%d_%H%M%S")"
 
-    local backup_file="$BACKUP_DIR/${source_file%.yaml}_${timestamp}.yaml"
-    cp "$source_file" "$backup_file"
+    local source_name
+    source_name="$(basename "$source_file")"
+    local backup_file="$resolved_backup_dir/${source_name%.yaml}_${timestamp}.yaml"
+
+    cp "$resolved_source_file" "$backup_file"
     echo "$backup_file"
 }
 
 ensure_python_env() {
-    cd_project_root
+    local venv_dir
+    local requirements_file
+    venv_dir="$(resolve_project_path "venv")"
+    requirements_file="$(resolve_project_path "requirements.txt")"
 
-    if [ ! -d "venv" ]; then
+    if [ ! -d "$venv_dir" ]; then
         echo "Creating virtual environment..."
-        python3 -m venv venv
+        python3 -m venv "$venv_dir"
     fi
 
     # shellcheck disable=SC1091
-    source venv/bin/activate
+    source "$venv_dir/bin/activate"
 
     if ! python3 -c "import flask, yaml, pynput" >/dev/null 2>&1; then
         echo "Installing Python dependencies..."
-        pip install -r requirements.txt
+        pip install -r "$requirements_file"
     fi
 }

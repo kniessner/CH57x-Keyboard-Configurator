@@ -5,8 +5,9 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 KARABINER_CONFIG_DIR="$HOME/.config/karabiner/assets/complex_modifications"
-CONFIG_FILE="karabiner_type_test.json"
+CONFIG_FILE="$PROJECT_ROOT/karabiner_type_test.json"
 
 echo "🎹 Karabiner-Elements Setup"
 echo "==========================="
@@ -41,7 +42,7 @@ mkdir -p "$KARABINER_CONFIG_DIR"
 
 # Copy configuration
 echo "📦 Installing configuration..."
-cp "$SCRIPT_DIR/$CONFIG_FILE" "$KARABINER_CONFIG_DIR/ch57x_type_test.json"
+cp "$CONFIG_FILE" "$KARABINER_CONFIG_DIR/ch57x_type_test.json"
 
 echo "✅ Configuration installed"
 echo ""
