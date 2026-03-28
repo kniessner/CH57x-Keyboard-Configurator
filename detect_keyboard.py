@@ -9,6 +9,20 @@ import re
 
 CH57X_VENDOR_ID = "1189"
 
+def mask_identifier(value):
+    """Mask hardware identifiers before returning them to the UI."""
+    if value is None:
+        return "N/A"
+
+    text = str(value).strip()
+    if not text or text == "N/A":
+        return "N/A"
+
+    if len(text) <= 4:
+        return "****"
+
+    return f"{'*' * max(4, len(text) - 4)}{text[-4:]}"
+
 def normalize_vendor_id(value):
     """Normalize vendor IDs like 0x1189 or 4489 to lowercase hex without 0x."""
     if value is None:
@@ -89,7 +103,7 @@ def detect_usb_keyboard():
                             'name': item.get('_name', 'Unknown'),
                             'vendor_id': vendor_id,
                             'product_id': item.get('product_id', 'Unknown'),
-                            'serial': item.get('serial_num', 'N/A'),
+                            'serial': mask_identifier(item.get('serial_num', 'N/A')),
                             'location_id': item.get('location_id', 'N/A')
                         }
     except Exception as e:
@@ -113,7 +127,7 @@ def detect_usb_keyboard():
                         'name': item.get('USB Product Name') or item.get('kUSBProductString') or item.get('name', 'Unknown'),
                         'vendor_id': vendor_id,
                         'product_id': item.get('idProduct', 'Unknown'),
-                        'serial': item.get('USB Serial Number') or item.get('kUSBSerialNumberString', 'N/A'),
+                        'serial': mask_identifier(item.get('USB Serial Number') or item.get('kUSBSerialNumberString', 'N/A')),
                         'location_id': item.get('locationID', 'N/A')
                     }
     except Exception as e:
@@ -188,7 +202,7 @@ def detect_bluetooth_keyboard():
                             'connected': True,
                             'type': 'Bluetooth',
                             'name': device.get('name', 'Unknown'),
-                            'address': device.get('address', 'N/A'),
+                            'address': mask_identifier(device.get('address', 'N/A')),
                             'vendor_id': device.get('vendor_id', 'N/A'),
                             'product_id': device.get('product_id', 'N/A'),
                             'battery': device.get('battery', 'N/A'),
@@ -202,7 +216,7 @@ def detect_bluetooth_keyboard():
                         'connected': True,
                         'type': 'Bluetooth',
                         'name': device.get('name', 'Unknown'),
-                        'address': device.get('address', 'N/A'),
+                        'address': mask_identifier(device.get('address', 'N/A')),
                         'vendor_id': device.get('vendor_id', 'N/A'),
                         'product_id': device.get('product_id', 'N/A'),
                         'battery': device.get('battery', 'N/A'),

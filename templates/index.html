@@ -582,6 +582,10 @@
                 </div>
             </div>
 
+            <div id="shellCommandDisabledNote" style="display: none; background: #fff3cd; padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #ffc107;">
+                Shell command bindings are disabled by default. Start the GUI with <code>ENABLE_SHELL_COMMANDS=1</code> if you want to enable them.
+            </div>
+
             <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #ddd;">
                 <h4 style="color: #333; margin-bottom: 15px;">➕ Add New Command Binding</h4>
                 <div style="display: grid; grid-template-columns: 2fr 3fr auto; gap: 10px; align-items: end;">
@@ -626,6 +630,31 @@
     <script>
         let keyOptions = {};
         let keyboardConfig = {rows: 3, columns: 4}; // Default
+        const shellCommandsEnabled = {{ 'true' if shell_commands_enabled else 'false' }};
+
+        function updateShellCommandUIState() {
+            const disabled = !shellCommandsEnabled;
+            const disabledNote = document.getElementById('shellCommandDisabledNote');
+            const toggle = document.getElementById('listenerToggle');
+            const keyCombo = document.getElementById('shellKeyCombo');
+            const command = document.getElementById('shellCommand');
+            const addButton = document.querySelector('.shell-command-section .btn-primary');
+            const statusSpan = document.getElementById('listenerStatus');
+            const listDiv = document.getElementById('shellCommandList');
+
+            disabledNote.style.display = disabled ? 'block' : 'none';
+            toggle.disabled = disabled;
+            keyCombo.disabled = disabled;
+            command.disabled = disabled;
+            addButton.disabled = disabled;
+
+            if (disabled) {
+                statusSpan.textContent = '🔒 Disabled';
+                statusSpan.style.background = '#e9ecef';
+                statusSpan.style.color = '#495057';
+                listDiv.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">Shell command bindings are disabled</div>';
+            }
+        }
 
         // Fetch device information
         async function fetchDeviceInfo() {
@@ -1293,6 +1322,10 @@
 
         // Shell Command Functions
         async function fetchShellCommands() {
+            if (!shellCommandsEnabled) {
+                updateShellCommandUIState();
+                return;
+            }
             try {
                 const response = await fetch('/api/shell-commands');
                 const result = await response.json();
@@ -1330,6 +1363,10 @@
         }
 
         async function addShellCommand() {
+            if (!shellCommandsEnabled) {
+                showStatus('❌ Shell command bindings are disabled by default', true);
+                return;
+            }
             const keyCombo = document.getElementById('shellKeyCombo').value.trim();
             const command = document.getElementById('shellCommand').value.trim();
 
@@ -1364,6 +1401,10 @@
         }
 
         async function deleteShellCommand(keyCombo) {
+            if (!shellCommandsEnabled) {
+                showStatus('❌ Shell command bindings are disabled by default', true);
+                return;
+            }
             if (!confirm(`Delete command binding for "${keyCombo}"?`)) {
                 return;
             }
@@ -1387,6 +1428,10 @@
         }
 
         async function toggleCommandListener() {
+            if (!shellCommandsEnabled) {
+                showStatus('❌ Shell command bindings are disabled by default', true);
+                return;
+            }
             const statusSpan = document.getElementById('listenerStatus');
             const button = document.getElementById('listenerToggle');
 
@@ -1429,6 +1474,10 @@
         }
 
         async function updateListenerStatus() {
+            if (!shellCommandsEnabled) {
+                updateShellCommandUIState();
+                return;
+            }
             try {
                 const response = await fetch('/api/shell-commands/listener/status');
                 const result = await response.json();
@@ -1465,6 +1514,7 @@
         // Save preference when toggle changes
         document.addEventListener('DOMContentLoaded', () => {
             loadAutoUploadPreference();
+            updateShellCommandUIState();
 
             document.getElementById('autoUploadToggle').addEventListener('change', (e) => {
                 localStorage.setItem('autoUpload', e.target.checked);

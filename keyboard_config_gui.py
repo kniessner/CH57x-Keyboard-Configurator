@@ -18,6 +18,16 @@ app = Flask(__name__)
 SHELL_COMMANDS_FILE = 'shell_commands.json'
 shell_command_listener = None
 shell_commands = {}
+SHELL_COMMANDS_ENABLED = os.environ.get('ENABLE_SHELL_COMMANDS', '').lower() in {'1', 'true', 'yes', 'on'}
+GUI_DEBUG = os.environ.get('KEYBOARD_GUI_DEBUG', '').lower() in {'1', 'true', 'yes', 'on'}
+
+def shell_commands_disabled_response():
+    """Shared response for disabled shell command functionality."""
+    return jsonify({
+        'success': False,
+        'enabled': False,
+        'error': 'Shell command bindings are disabled by default. Set ENABLE_SHELL_COMMANDS=1 to enable them.'
+    }), 403
 
 def load_shell_commands():
     """Load shell command mappings from file"""
@@ -107,6 +117,10 @@ class ShellCommandListener:
 
     def execute_command(self, command):
         """Execute a shell command in the background"""
+        if not SHELL_COMMANDS_ENABLED:
+            print("Shell command execution skipped because ENABLE_SHELL_COMMANDS is not enabled.")
+            return
+
         def run():
             try:
                 subprocess.run(command, shell=True, capture_output=True, text=True)
@@ -231,7 +245,7 @@ COMMON_SHORTCUTS = {
 @app.route('/')
 def index():
     """Serve the main GUI page"""
-    return render_template('index.html')
+    return render_template('index.html', shell_commands_enabled=SHELL_COMMANDS_ENABLED)
 
 @app.route('/api/key-options')
 def get_key_options():
@@ -546,7 +560,9 @@ def load_preset():
 def get_shell_commands():
     """Get all shell command mappings"""
     try:
-        return jsonify({'success': True, 'commands': shell_commands})
+        if not SHELL_COMMANDS_ENABLED:
+            return jsonify({'success': True, 'enabled': False, 'commands': {}})
+        return jsonify({'success': True, 'enabled': True, 'commands': shell_commands})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
@@ -554,6 +570,8 @@ def get_shell_commands():
 def add_shell_command():
     """Add or update a shell command mapping"""
     try:
+        if not SHELL_COMMANDS_ENABLED:
+            return shell_commands_disabled_response()
         data = request.json
         key_combo = data.get('key_combo', '').strip()
         command = data.get('command', '').strip()
@@ -577,6 +595,8 @@ def add_shell_command():
 def delete_shell_command(key_combo):
     """Delete a shell command mapping"""
     try:
+        if not SHELL_COMMANDS_ENABLED:
+            return shell_commands_disabled_response()
         if key_combo in shell_commands:
             del shell_commands[key_combo]
             if save_shell_commands():
@@ -597,6 +617,8 @@ def toggle_listener():
     """Start or stop the shell command listener"""
     global shell_command_listener
     try:
+        if not SHELL_COMMANDS_ENABLED:
+            return shell_commands_disabled_response()
         data = request.json
         action = data.get('action', 'start')
 
@@ -618,8 +640,10 @@ def toggle_listener():
 def listener_status():
     """Get the status of the shell command listener"""
     try:
+        if not SHELL_COMMANDS_ENABLED:
+            return jsonify({'success': True, 'enabled': False, 'active': False})
         active = shell_command_listener.active if shell_command_listener else False
-        return jsonify({'success': True, 'active': active})
+        return jsonify({'success': True, 'enabled': True, 'active': active})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
@@ -728,9 +752,11 @@ if __name__ == '__main__':
 
     print("\n🌐 Opening web interface at http://localhost:5001")
     print("📝 Press Ctrl+C to stop the server\n")
+    if not SHELL_COMMANDS_ENABLED:
+        print("⚠️  Shell command bindings are disabled. Set ENABLE_SHELL_COMMANDS=1 to enable them.")
 
     try:
-        app.run(debug=True, host='127.0.0.1', port=5001, use_reloader=False)
+        app.run(debug=GUI_DEBUG, host='127.0.0.1', port=5001, use_reloader=False)
     finally:
         # Clean up listener on exit
         if shell_command_listener:

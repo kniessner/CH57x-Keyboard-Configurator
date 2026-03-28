@@ -164,6 +164,8 @@ Examples:
 
 More detail is in [`doc/SHELL_COMMANDS.md`](doc/SHELL_COMMANDS.md).
 
+Shell command bindings are disabled by default in the GUI. To enable them intentionally for local use, start the GUI with `ENABLE_SHELL_COMMANDS=1 ./keyboard.sh gui`.
+
 ## Troubleshooting
 
 If the keyboard is connected but not detected:
@@ -179,6 +181,7 @@ If validation or upload fails:
 If the GUI fails to start:
 - rerun `./keyboard.sh gui`
 - the launcher will recreate the local Python environment if needed
+- Flask debug mode is off by default; set `KEYBOARD_GUI_DEBUG=1` only for local troubleshooting
 
 If uploads keep prompting for `sudo` and you want to avoid that:
 - run `./keyboard.sh passwordless`
